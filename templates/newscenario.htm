@@ -1,0 +1,23 @@
+{% extends "_base.htm" %}
+{% block bodycontent %}
+<script>
+var sc = {{sc}};
+</script>
+
+<div class="pg">
+
+<h2>New scenario</h2>
+<p>
+On the next screen, you will see the reports of a new volunteer.
+</p>
+<p>
+This will be scenario <script>document.write(sc+2)</script> of 8.
+</p>
+
+<form method="get" action="/scenario">
+<input type="submit" value="Start"></input>
+</form>
+
+</div>
+
+{% endblock %}

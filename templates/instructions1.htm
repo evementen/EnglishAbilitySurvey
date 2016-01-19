@@ -1,0 +1,30 @@
+{% extends "_base.htm" %}
+{% block bodycontent %}
+
+<div class="pg">
+	<h2><center>Instructions</center></h2>
+
+		<p>
+		Imagine you are a researcher studying whether engaging in different routines at the start of the day can improve people’s moods. Here are some examples of these routines:
+		</p>
+		<div class="pgdvsmall" style="height:auto;">
+			<img src="/static/pictures/cycling.jpg" height=160px position:relative display:inline></img>&nbsp&nbsp&nbsp
+			<img src="/static/pictures/yoga.jpg" height=160px position:relative display:inline></img>&nbsp&nbsp&nbsp
+			<img src="/static/pictures/climbing.jpg" height=160px position:relative display:inline></img>
+		</div>					
+		<p>
+		You recruit a group of volunteers. Each volunteer is instructed in an easy-to-follow routine involving an assigned activity (e.g. yoga, cycling, etc.).
+		</p>
+		<p>
+		They are told to try the routine involving the assigned activity some mornings instead of their regular morning routines. Each volunteer has a different regular routine (e.g. running, reading a book, etc.). At the end of the day, they report to you whether they were in a good mood or not that day.
+		</p>
+
+	<center>
+		<form method="get" action="/instructions2">
+		<input type="submit" value="Continue"/> 
+		</form>
+	</center>
+
+</div>
+
+{% endblock %}

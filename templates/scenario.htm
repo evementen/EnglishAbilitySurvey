@@ -1,0 +1,472 @@
+{% extends "_base.htm" %}
+
+{% block bodycontent %}
+
+<head>
+
+<script>
+
+/////// Variables passed to page
+var sc = {{sc}};
+var usernum = {{usernum}};
+var conditionWithin = {{conditionWithin}};
+var data = {{data}};
+
+// Demo scenario has special data
+if (sc==0) {
+	var data = [1,4,1,4,1,4,1,4];
+}
+
+/////// Names for scenarios
+var sNames = ['Megan', 'Cory', 'Kate', 'Pam', 'Josh', 'Hannah', 'Brendan', 'Eric']
+
+// Regular routines
+var regNames = ['cycling', 'eating breakfast', 'swimming', 'walking her dog', 'sleeping in', 'meditation', 'reading', 'playing golf']
+var regNamesCaps = ['Cycling', 'Eating breakfast', 'Swimming', 'Walking her dog', 'Sleeping in', 'Meditation', 'Reading', 'Playing golf']
+var regNamesLabel = ['go cycling', 'eat breakfast', 'go swimming', 'walk her dog', 'sleep in', 'meditate', 'read', 'play golf']
+var regPicNames = ['cycling.jpg', 'breakfast.jpg', 'swimming.jpg', 'walkingdog.jpg', 'sleep.jpg', 'meditation.jpg', 'reading.jpg', 'golf.jpg']
+
+// Alternate routines
+var altNames = ['yoga', 'running', 'climbing', 'aerobics', 'walking', 'lifting weights', 'listening to music', 'playing tennis']
+var altNamesCaps = ['Yoga', 'Running', 'Climbing', 'Aerobics', 'Walking', 'Lifting weights', 'Listening to music', 'Playing tennis']
+var altNamesLabel = ['do yoga', 'go running', 'go climbing', 'do aerobics', 'go walking', 'lift weights', 'listen to music', 'play tennis']
+var altPicNames = ['yoga.jpg', 'running.jpg', 'climbing.jpg', 'aerobics.jpg', 'powerwalking.jpg', 'weights.jpg', 'music.jpg', 'tennis.jpg']
+
+/////// Other variables for running the page
+var checked = 1;
+var trial = -1; // Starts at negative one because experiment starts before data is displayed
+var totalTrials = data.length;
+
+/////// This is for the timer, now initialized at first time point
+var durations = new Array();
+
+/////// For storing responses
+var strengths = new Array()
+
+//////////////////////////////////////////////////
+/////// Functions ////////////////////////////////
+//////////////////////////////////////////////////
+
+/////// Function to disable 'same as before' checkbox if slider is moved
+function disableCheckbox(checkbox) {
+	document.getElementById(checkbox).disabled=true;
+	document.getElementById(checkbox+"Prompt").style.opacity=0.4;
+}
+
+/////// Function to enable 'same as before' checkbox on next day
+function enableCheckbox(checkbox) {
+	document.getElementById(checkbox).style.visibility='visible';
+	document.getElementById(checkbox).disabled=false;
+	document.getElementById(checkbox+"Prompt").style.visibility='visible';
+	document.getElementById(checkbox+"Prompt").style.opacity=1;
+	document.getElementById(checkbox+"Box").style.visibility='visible';
+	document.getElementById(checkbox).checked=false;
+}
+
+/////// Function to enable/disable buttons
+function offButtons() {
+	$("#strengthDecrease").attr("disabled", true);
+	$("#strengthIncrease").attr("disabled", true);
+}
+
+function onButtons() {
+	$("#strengthDecrease").attr("disabled", false);
+	$("#strengthIncrease").attr("disabled", false);
+}
+
+/////// Function to disable/enable slider if 'same as before' box is checked
+function sliderOnOff(input) {
+	if (checked%2!=0) {
+		document.getElementById(input+"DV").disabled=true;
+		checked++;
+		offButtons();
+	}
+	else {
+		document.getElementById(input+"DV").disabled=false;
+		checked++;
+		onButtons();
+	}
+}
+
+/////// Timer function
+function timer() {
+	var trialDate = new Date();
+	var trialTime = trialDate.getTime();
+	durations[trial] = trialTime - startTime;
+}
+
+/////// Function to submit form, move to next scenario
+function MySubmit() {
+	/////// Record responses in arrays
+	strengths[trial] = document.getElementById("strengthDV").value;
+	document.getElementById('Submit').disabled=true;
+	
+	$("#dvbox").fadeTo("fast", "0.15");
+	offButtons();
+	disableCheckbox('strengthSame');
+	$("#blocker1").fadeTo("fast", "1");
+	$("#blocker2").fadeTo("fast", "1");
+
+	setTimeout(function(){displayNext();},400);
+	/////// Submit form
+	if (trial==totalTrials-1) {
+		document.getElementById("data").value = String(data);
+		document.getElementById("strength").value = String(strengths);
+		document.getElementById("duration").value = String(durations);
+		document.getElementById("myForm").submit();
+	}
+}
+
+/////// Function to display right switch and button for next day, when slider or checkbox used
+function displayNext() {
+	document.getElementById('nextHour').style.opacity=1;
+	document.getElementById('nextHour').style.visibility="visible";
+	document.getElementById('nextHour').disabled=false;
+}
+
+/////// Function to move forward to next day (display Submit at the end)
+function forward() {
+	if (trial<totalTrials-1) {document.getElementById('Submit').disabled=false;}
+	if (trial==totalTrials-1) {document.getElementById('Submit').disabled=false;}
+}
+
+/////// Function to change stuff when drug administered
+function drugged() {
+	if (trial<totalTrials) {
+		// Initializes timer and displays DV	
+		if (trial<0) {
+			start = new Date();
+			startTime = start.getTime();
+			$("#dvbox").fadeTo(0,"1")
+		}
+
+		$("#nextHour").attr("disabled", true);
+		trial++;
+
+		/////// Activates or deactivates cause
+		// On
+		if (data[trial]<=2) {
+			$("#pictureReg").fadeTo(0,"0")
+			$("#pictureAlt").fadeTo(0,"1");
+		
+		}
+		// Off
+		if (data[trial]>=3) {
+			$("#pictureReg").fadeTo(0,"1")
+			$("#pictureAlt").fadeTo(0,"0");
+		}
+
+		/////// Reads and displays appropriate effect
+		// High
+		if (data[trial]%2==1) {
+			$("#displayB").text("Happy");
+		}
+		// Low
+		if (data[trial]%2==0) {
+			$("#displayB").text("Normal");
+		}
+			
+		/////// Handles elements of page
+		timelineMove();
+		$("#blocker1").fadeTo("fast", "0");
+		$("#blocker2").fadeTo("fast", "0");
+
+		// Reveals form and response buttons
+		$("#dvbox").fadeTo("fast", "1");
+		onButtons();
+		enableCheckbox('strengthSame');
+ 	
+	 	checked = 1;
+	}
+}
+
+/////// Function to blank out response box
+function dvDisable() {
+	document.getElementById('dvbox').style.opacity=0.15;
+	document.getElementById("strengthDV").disabled=true;
+}
+
+/////// Function to make response box visible
+function dvEnable() {
+	document.getElementById('dvbox').style.opacity=1;
+	// document.getElementById("strengthDV").disabled=false;
+	$("#dvbox").fadeTo(0,"1");
+	$("#strengthDV").disabled=false;
+
+	$("#strengthIncrease1").attr("disabled", false);
+	$("#strengthIncrease5").attr("disabled", false);
+	$("#strengthDecrease1").attr("disabled", false);
+	$("#strengthDecrease5").attr("disabled", false);
+}
+
+//////// Function to increase and decrease strength
+function change(current,diff) {
+	newStrength = Number(current) + diff
+	if (newStrength>=99) { 
+		newStrength = 99;
+	}
+	else if (newStrength<=-99) {
+		newStrength = -99;
+	}
+
+	outputUpdate1(newStrength);
+	strengthDV.value = String(newStrength);
+	
+	if (newStrength==0){ 
+		$("#directionPrompt").text("Both activities are equal");
+	}
+	else if (newStrength>0){ 
+		$("#directionPrompt").text(altNamesCaps[sc] + " is better for mood");
+	}
+	else if (newStrength<0){ 
+		$("#directionPrompt").text(regNamesCaps[sc] + " is better for mood");
+	}
+
+}
+
+//////////////////////////////////////////////////
+/////// d3 Functions /////////////////////////////
+//////////////////////////////////////////////////
+
+// Function to get state of node
+function getState(c) {
+	if (c.attr("class")=="present") { state=1; }
+	else if (c.attr("class")=="absent") { state=0; }
+	return state;
+}
+
+// Function to turn each node on/off
+function OnOff(c,set) {
+				
+	// Get coordinates of node
+	cx = Number(c.attr("cx"));
+	cy = Number(c.attr("cy"));
+	
+	// If node is off, turn on		
+	if (getState(c)==0) {
+		if (set==1) {
+			c.transition()
+				.duration(1500)
+				.attr("class","present")
+				.style("fill","#26A32A")
+				.style("stroke-width","5.5")
+				.attr("cx",cx+1)
+				.attr("cy",cy-1)
+				.attr("r",16)
+				.ease("elastic");
+		}
+	}
+	// If node is on, turn off
+	else if (getState(c)==1) {
+		if (set==0) {
+			c.transition()
+				.duration(1500)
+				.attr("class","absent")
+				.style("fill","WhiteSmoke")
+				.style("stroke-width","1.5")
+				.attr("cx",cx-1)
+				.attr("cy",cy+1)
+				.attr("r",13)
+				.ease("elastic");
+		}
+	}
+}
+
+// Function to move timeline forward
+function timelineMove() {
+
+	// Get coordinates of timeline
+	xTime = Number(timelineButton.attr("x"));
+
+	timelineButton.transition()
+		.duration(200)
+		.attr("x",xTime+(350/9))
+		// .ease("elastic");
+
+	timelineBlocker.transition()
+		.duration(200)
+		.attr("x",xTime+(350/9))
+		// .ease("elastic");
+
+	timelineDay.transition()
+		.duration(200)
+		.attr("x",xTime+13+(350/9))
+		// .ease("elastic");
+
+	timelineDay.text(trial+1);
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div id="instructions" class="pgwide">
+	
+	<div id="scenarioInstr" style="text-align:justify">
+		<p>
+		After viewing each day's report, please estimate whether <b><script>document.write(regNames[sc])</script></b> or <b><script>document.write(altNames[sc])</script></b> benefited <b><script>document.write(sNames[sc])</script>'s</b> mood more. You should adjust your estimate as you view each day's report.
+		</p> 
+		<center><span style="font-size:30px">Day:</span></center>
+	</div>
+	
+	<script type="text/javascript">
+		// Appends SVG canvas		
+		var svg = d3.select("#scenarioInstr").append("svg")
+					.attr("width", 700)
+					.attr("height", 50)
+					.attr("fill", "blue");
+
+				// Append nodes
+				var timelineBack = svg.append("rect")
+					.attr("class", "absent")
+					.attr("x", 175)
+					.attr("y", 5)
+					.attr("height", 30)
+					.attr("width", 350)
+					.attr("rx", 10)
+					.attr("ry", 10)
+					.attr("fill", "#90ed7d");
+
+				var timelineBlocker = svg.append("rect")
+					.attr("class", "absent")
+					.attr("x", 175)
+					.attr("y", 5)
+					.attr("height", 30)
+					.attr("width", 350)
+					.attr("rx", 10)
+					.attr("ry", 10)
+					.attr("fill", "white");
+
+				var timelineOutline = svg.append("rect")
+					.attr("class", "absent")
+					.attr("x", 175)
+					.attr("y", 5)
+					.attr("height", 30)
+					.attr("width", 350)
+					.attr("rx", 10)
+					.attr("ry", 10)
+					.attr("fill", "none")
+					.attr("stroke", "#333333")
+					.attr("stroke-width", "2");
+
+				var timelineButton = svg.append("rect")
+					.attr("class", "absent")
+					.attr("x", 175)
+					.attr("y", 5)
+					.attr("height", 30)
+					.attr("width", 40)
+					.attr("rx", 10)
+					.attr("ry", 10)
+					// .attr("fill", "#333333");
+					.attr("fill", "none")
+					.attr("stroke", "#333333")
+					.attr("stroke-width", "2");
+
+				var timelineDay = svg.append("text")
+					.attr("x", 175+13)
+					.attr("y", 28)
+					.style("fill", "black")
+					.style("font-size", "25px")
+					.text(trial+1)
+
+				</script>
+				<center>
+					<button id="nextHour" onclick="drugged()" style="height:3em; font-size:12px;">View next day's report</button>
+				</center>
+				<br>
+
+	<div id="stimuli" align="center">
+
+		<div id="A" class="variable">
+			<div id="labelA" class="label">Did <script>document.write(sNames[sc])</script> <script>document.write(regNamesLabel[sc])</script> or <script>document.write(altNamesLabel[sc])</script> today?</div>
+			<br>
+				<div id="blocker1" style="position:absolute; left:10px; top:80px; background-color:white; width:260px; height:165px;"></div>
+
+				<img id="pictureReg" class="image" height=160px></img><br>
+				<img id="pictureAlt" class="image" height=160px></img><br>
+			
+				<script type="text/javascript">
+				$("#pictureReg").attr("src","/static/pictures/"+regPicNames[sc])
+				$("#pictureAlt").attr("src","/static/pictures/"+altPicNames[sc])
+				</script>
+
+		</div>
+			
+		<div id="B" class="variable">
+			<div id="labelB" class="label">How did <script>document.write(sNames[sc])</script> feel today?</div><br><br><br><br>
+				<div id="blocker2" style="position:absolute; left:10px; top:80px; background-color:white; width:260px; height:165px;"></div>
+
+				<div id="displayB" class="displayB">START</div>
+
+		</div>
+
+	</div>
+
+		<br><br>
+
+		<center>
+			
+			<form id="myForm" align="center" method="post" action='/scenario' style="visibility:visible">
+
+				<div class="pgdvlarge" id="dvbox" style="opacity:0.15">
+				
+					<span>
+						Does <b><script>document.write(regNames[sc])</script></b> or <b><script>document.write(altNames[sc])</script></b> benefit <script>document.write(sNames[sc])</script>'s mood more?<br><br>
+					</span>
+						
+					<div id="strengthBox">
+
+						<div style="position:absolute; left:180px; top:52px">
+								<button id="strengthIncrease" disabled="disable" type="button" style="font-size:15px; width:40px" onclick="change(strengthDV.value,1); disableCheckbox('strengthSame'); forward();">+1</button><br>
+								<button id="strengthDecrease" disabled="disable" type="button" style="font-size:15px; width:40px" onclick="change(strengthDV.value,-1); disableCheckbox('strengthSame'); forward();">-1</button><br>
+						</div>
+
+						<div class="pgdvsmall" style="width:40px; visibility:visible; position:absolute; left:238px">
+							<output for=strengthDV id=strengthDisplay style="opacity:1; text-align:right; font-size:24px">0</output>
+								<script>
+									function outputUpdate1(vol) {
+										document.querySelector('#strengthDisplay').value = vol;
+									}
+								</script>
+						</div>
+
+						<div id="directionPrompt" style="position:absolute; left:320px; top:65px">
+							Both activities are equal
+						</div>
+
+						<input class="slider-long" style="visibility:hidden" type=range min=-99 max=99 step=1 value=0 id="strengthDV" onchange="outputUpdate1(value); forward(); disableCheckbox('strengthSame')">
+
+					</div>
+
+					<br><br><br>
+
+					<span style="font-size:13px"><i><b>Positive</b> ratings indicate <script>document.write(altNames[sc])</script> is better for mood<br><b>Negative</b> ratings indicate <script>document.write(regNames[sc])</script> is better for mood</i><br><i>'<b>0</b>' indicates no difference in how both activities affect mood</i></span> 
+
+					<br><br><br>
+
+					<div id="strengthSameBox">
+						<input type="checkbox" id="strengthSame" disabled="disabled" onchange="sliderOnOff('strength'); forward()"><span id="strengthSamePrompt"><i> I do not wish to change my estimate at this time</i></span>
+					</div>
+				
+					<br>
+
+					<input type="button" id="Submit" onclick="timer(), MySubmit()" value="Submit your estimate" style="font-size:14px" disabled='true'>
+				
+				</div>
+
+				<br>
+
+				<input type="hidden" id="data" name="data" value="">
+				<input type="hidden" id="strength" name="strength" value="">
+				<input type="hidden" id="duration" name="duration" value="">
+
+			</form>
+	
+		</center>
+
+</div>
+
+</body>
+{% endblock %}

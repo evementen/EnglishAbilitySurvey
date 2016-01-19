@@ -1,0 +1,99 @@
+{% extends "_base.htm" %}
+
+{% block bodycontent %}
+
+<html>
+    <head>
+        <!-- <link rel="stylesheet" href="Assignment1-styles.css" type="text/css"/> -->
+        
+        <script type="text/javascript">
+
+var x=navigator
+
+// document.write("Name=" + x.appName)
+// document.write("<br/>")
+// document.write("Version=" + x.appVersion)
+// document.write("<br/>")
+// document.write("CookieEnabled=" + x.cookieEnabled)
+// document.write("<br/>")
+// document.write("BrowserLanguage=" + x.browserLanguage)
+// document.write("<br/>")
+// document.write("SystemLanguage=" + x.systemLanguage)
+// document.write("<br/>")
+// document.write("UserLanguage=" + x.userLanguage)
+
+
+</script>
+
+    </head>
+    <body>
+        <h1>Responsive website development and design</h1>
+        <!-- <h2 id="title" onMouseOver="alert(navigator.language);" >
+        	Hello
+        </h2> -->
+    </body>
+
+</html>
+
+<!-- <form>
+	<input id="language" type="hidden" value=""></input>
+</form> -->
+
+<script type="text/javascript">
+
+	// $("#language").value = navigator.language; jQuery way of putting navigator.language in hidden form field
+
+    function SubmitForm(){
+        // takes input from user in form questions (q1,q2,...) and puts in hidden inputs at bottom of form
+        document.getElementById("gender").value = document.getElementById("q1").value; 
+        document.getElementById("moocBefore").value = document.getElementById("q2").value;
+
+        // gets browser language
+        document.getElementById("language").value = navigator.language;
+
+        // gets ip?
+         // document.getElementById("getip").value = pygeoip.document.value;
+
+        // submits form
+        document.getElementById("EnglishSurvey").submit();    
+    }
+</script>
+
+
+
+
+<!--the survey form starts here -->
+<form method="post" action="/evelyn" id="EnglishSurvey">
+Form goes here.<br>
+
+Gender
+<select id="q1"> <!-- disabled="true",onchange=functionName();"" -->
+    <option value="0" selected="selected" disabled="true"></option>
+    <option value="1">Male</option>
+    <option value="2">Female</option>
+    <option value="3">Other</option>
+</select>
+
+<br>
+
+Have you taken a MOOC before?
+<select id="q2">
+    <option value="0" selected="selected" disabled="true"></option>
+    <option value="1">Yes</option>
+    <option value="2">No</option>
+    <option value="3">Other</option>
+</select>
+
+<br>
+
+<input type="button" id="Submit" onclick="SubmitForm()" value="Submit" style="font-size:14px">
+
+<!-- Hidden input fields to put responses - one for each question. id and name field are same as value in SubmitForm function, not in form block -->
+<input type="hidden" id="gender" name="gender" value="">
+<input type="hidden" id="moocBefore" name="moocBefore" value="">
+<input type="hidden" id="language" name="language" value="">
+<!-- <input type="hidden" id="getip" name="getip" value=""> -->
+
+</form>
+
+{% endblock %}

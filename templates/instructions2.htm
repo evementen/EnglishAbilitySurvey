@@ -1,0 +1,90 @@
+{% extends "_base.htm" %}
+{% block bodycontent %}
+
+<div class="pg">
+	<h2><center>Instructions</center></h2>
+
+		<p>
+		You will see a volunteer's daily reports for 8 consecutive days. At the end of the day, the volunteer reports to you (a) whether they engaged in the assigned alternative activity or their regular routine that morning, and (b) whether they were in a good mood that day or not.
+		</p>
+	
+		<p>
+		Your goal is to figure out if the alternative activity or their regular routine benefits that volunteer's mood more. You will use the scale below (try it out!) - you should adjust your estimate as you view each day's report.
+		</p>
+
+		<div class="pgdvsmall" id="dvbox" style="opacity:1">
+				
+					<span>
+						Does <b>cycling</b> or <b>yoga</b> benefit the volunteer's mood more?<br><br>
+					</span>
+						
+					<div id="strengthBox">
+
+						<div style="position:absolute; left:180px; top:52px">
+								<button id="strengthIncrease" type="button" style="font-size:15px; width:40px" onclick="change(strengthDV.value,1)">+1</button><br>
+								<button id="strengthDecrease" type="button" style="font-size:15px; width:40px" onclick="change(strengthDV.value,-1)">-1</button><br>
+						</div>
+
+						<div class="pgdvsmall" style="width:40px; visibility:visible; position:absolute; left:238px">
+							<output for=strengthDV id=strengthDisplay style="opacity:1; text-align:right; font-size:24px">0</output>
+								<script>
+									function outputUpdate1(vol) {
+										document.querySelector('#strengthDisplay').value = vol;
+									}
+
+									function change(current,diff) {
+										newStrength = Number(current) + diff
+										if (newStrength>=99) { 
+											newStrength = 99;
+										}
+										else if (newStrength<=-99) {
+											newStrength = -99;
+										}
+
+										outputUpdate1(newStrength);
+										strengthDV.value = String(newStrength);
+										
+										if (newStrength==0){ 
+											$("#directionPrompt").text("Both activities are equal");
+										}
+										else if (newStrength>0){ 
+											$("#directionPrompt").text("Yoga is better for mood");
+										}
+										else if (newStrength<0){ 
+											$("#directionPrompt").text("Cycling is better for mood");
+										}
+									}
+
+								</script>
+						</div>
+
+						<div id="directionPrompt" style="position:absolute; left:320px; top:65px">
+							Both activities are equal
+						</div>
+
+						<input class="slider-long" style="visibility:hidden" type=range min=-99 max=99 step=1 value=0 id="strengthDV" onchange="outputUpdate1(value); forward(); disableCheckbox('strengthSame')">
+
+					</div>
+
+					<br><br><br>
+
+					<span style="font-size:13px"><i><b>Positive</b> ratings indicate yoga is better for mood<br><b>Negative</b> ratings indicate cycling is better for mood</i><br><i>'<b>0</b>' indicates no difference in how both activities affect mood</i></span> 
+				
+				</div>
+
+		<p>
+		A rating of 0 indicates the two routines do not differ in how they affect mood. A greater negative rating (closer to -99) means that their regular routine benefits mood much more than the alternative routine. A greater positive rating (closer to 99) means that the alternative routine benefits mood much more than their regular routine.
+		</p>
+		<p>
+		Bear in mind that besides the routines they do in the morning, other things that happen during the day can also influence the volunteer's mood.
+		</p>
+		
+	<center>
+		<form method="get" action="/instruction">
+		<input type="submit" value="Continue"/> 
+		</form>
+	</center>
+
+</div>
+
+{% endblock %}

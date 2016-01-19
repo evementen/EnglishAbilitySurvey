@@ -1,0 +1,48 @@
+{% extends "_base.htm" %}
+{% block bodycontent %}
+
+<!-- 
+<script>
+var conditionBetween = {{conditionBetween}};
+
+if (conditionBetween[0] == 0) {
+	document.getElementById('normal').style.visibility="visible";
+}
+if (conditionBetween[0] == 1) {
+	document.getElementById('control').style.visibility="visible";
+}
+</script>
+ -->
+
+<div class="pg">
+	<center><h2>You Qualify! Accept the hit now!</h2></center>
+	<p>
+	<br>Please accept the hit now before continuing, otherwise it is possible that the hit will fill up.<br>
+	<br>While using this site, <u>never reload or press the back button</u>. If you do you may lose the ability to finish this hit.<br>
+	</p>
+
+	<p><i>
+	Note: If your responses indicate that you have neglected to read the instructions given, you may not be paid for the HIT.
+	</i></p>
+
+	<center>After accepting the hit:
+
+	<div id="normal" style="visibility:visible">
+		<form method="get" action="/instructions1">
+		<input type="submit" value="Start the Study"/> 
+		</form>
+	</div>
+
+<!-- 
+<div id="control" style="visibility:hidden">
+<form method="get" action="/instructions">
+<input type="submit" value="Start the Study"/> 
+</form>
+</div>
+ -->
+
+	</center>
+
+</div>
+
+{% endblock %}

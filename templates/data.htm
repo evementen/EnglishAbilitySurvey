@@ -1,0 +1,108 @@
+{% extends "_base.htm" %}
+{% block bodycontent %}
+<head>
+</head>
+<body>
+
+
+<!-- ########## Data For Each Scenario ########## -->
+ScenarioData:
+<table>
+
+<!-- Header Row -->
+<tr>
+
+<th>usernum</th>
+<th>account</th>
+<th>created</th>
+<th>conditionWithin</th>
+<th>sc</th>
+<th colspan=8>data</th>
+<th colspan=8>strength</th>
+<th colspan=8>duration</th>
+
+</tr>
+
+<!-- Subsequent Rows -->
+{% for i in d %}
+<tr>
+
+<th>{{ i.usernum }}</th>
+<th>{{ i.account }}</th>
+<th>{{ i.created }}</th>
+<th>{{ i.conditionWithin }}</th>
+<th>{{ i.sc }}</th>
+
+{% for j in i.data %}
+<th>{{j}}</th>
+{% endfor %}
+
+{% for j in i.strength %}
+<th>{{j}}</th>
+{% endfor %}
+
+{% for j in i.duration %}
+<th>{{j}}</th>
+{% endfor %}
+
+</tr>
+{% endfor %}
+</table>
+<br>
+<br>
+
+
+
+
+
+
+
+
+
+<!-- ########## User Table ########## -->
+User:
+<table>
+<!-- Header Row -->
+<tr>
+
+<th>usernum</th>
+<th>account</th>
+<th>created</th>
+<th>browser</th>
+<th>completion_code</th>
+<th>sex</th>
+<th>ethnicity</th>
+<th>race</th>
+
+</tr>
+
+<!-- Subsequent Rows -->
+{% for i in u %}
+<tr>
+<th>{{ i.usernum }}</th>
+<th>{{ i.account }}</th>
+<th>{{ i.created }}</th>
+<th>{{ i.browser }}</th>
+<th>{{ i.Completion_Code }}</th>
+<th>{{ i.sex }}</th>
+<th>{{ i.ethnicity }}</th>
+<th>{{ i.race }}</th>
+
+</tr>
+{% endfor %}
+</table>
+
+
+
+<br>
+<br>
+<br>
+<br>
+
+</body>
+{% endblock %}
+
+
+
+
+
