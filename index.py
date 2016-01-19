@@ -6,10 +6,6 @@ import random
 import math
 import string
 import urllib
-#pip install pygeoip
-
-# gi = pygeoip.GeoIP("GeoIP.dat")
-# gi.country_code_by_addr()
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
