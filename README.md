@@ -1,5 +1,5 @@
-# ahihtcoesa3-5e
+# English Ability Survey
 <b>Experiment for Google App Engine</b><br>
-<i>Used for master's thesis</i>
+<i>Thanks to kevinsoo for extensive help with code</i>
 
-Presents longitudinal data consisting of a binary cause and binary effect over 8 time points. After each observation, subjects adjust their judgments of how strongly they believe the cause influences the effect.
+Survey on GAE to understand MOOC users' langauge ability.
