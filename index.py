@@ -6,6 +6,11 @@ import random
 import math
 import string
 import urllib
+import csv
+
+#import pygeoip
+#gi = pygeoip.GeoIP('GeoIP.dat', flags=pygeoip.const.MEMORY_CACHE)
+#Location = gi.country_code_by_addr(self.request.remote_addr)
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -54,9 +59,16 @@ class SurveyData(db.Model):
 	BrowserLanguage = 	db.StringProperty()
 	# DetectIP = 			db.StringProperty()
 
-# class pygeoip.GeoIP(GeoIP.dat,flags=0,cache=True)
-	# country_code_by_addr();
+#class pygeoip.GeoIP(GeoIP.dat,flags=0,cache=True):
+#	CountryCode = 		db.StringProperty
 
+class pygeoip.GeoIP('Users/evelyn/Documents/MOOC/Code/pygeoip-master/lookup/GeoIP.dat',flags=0,cache=True):
+	CountryCode = 		db.StringProperty()
+	#gi = pygeoip.GeoIP('Users/evelyn/Documents/MOOC/Code/pygeoip-master/lookup/GeoIP.dat', flags=pygeoip.const.MEMORY_CACHE)
+	#Location = gi.country_code_by_addr(self.request.remote_addr)
+
+	gi = GeoIP.open("GeoLiteCity.dat", GeoIP.GEOIP_INDEX_CACHE | GeoIP.GEOIP_CHECK_CACHE)
+	print gi.record_by_name("74.125.67.100") # a www.google.com IP
 
 #This stores the current number of participants who have ever taken the study.
 #see https://developers.google.com/appengine/docs/python/datastore/transactions
@@ -278,12 +290,12 @@ class EvelynHandler(webapp.RequestHandler): # Handler for the whole page
 		Gender = int(self.request.get('gender')) # converts from string in form to int to store in DB
 		MOOCBefore = int(self.request.get('moocBefore'))
 		BrowserLanguage = str(self.request.get('language'))
-		# DetectIP = str(self.request.get('getip'))
+		CountryCode = str(self.request.get('getip'))
 
 		newInput = SurveyData(Gender=Gender, #I'm equating database name with variable (list all here!)
 			MOOCBefore = MOOCBefore,
-			BrowserLanguage = BrowserLanguage);
-			# DetectIP = DetectIP),
+			BrowserLanguage = BrowserLanguage,
+			CountryCode = CountryCode);
 		newInput.put() #this takes all of the above data and puts it in a single line
 
 
